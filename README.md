@@ -27,7 +27,7 @@
 
 | 기존 반려견 동승 주행의 문제점 | Pleos Pet Sanctuary의 해결 방식 |
 | :---: | :---: |
-| ![불안해하는 반려견](manual_screenshots/dog_character_anxious_face.jpg) | ![편안해진 반려견](manual_screenshots/dog_character_hero_reference.jpg) |
+| ![멀미와 불안으로 괴로워하는 반려견과 걱정하는 운전자](manual_screenshots/problem_anxious_dog_worried_driver.jpg) | ![편안하게 쉬는 반려견과 안심하고 행복한 운전자](manual_screenshots/solution_happy_dog_peaceful_driver.jpg) |
 | **사람보다 4배 민감한 청각과 흔들리는 차체**<br>• 엔진·노면 저주파 진동과 급격한 온도 상승으로 인한 **구토·멀미**<br>• 어두운 **터널 진입 시 굉음과 배기가스**로 인한 패닉 발작<br>• 휴게소 잠깐 정차 시 **분리불안** 및 **발로 창문 버튼을 밟는 추락 사고 위험**<br>• 운전 중 에어컨·풍향·창문·조명·음악을 각각 조작하느라 발생하는 **전방 주시 태만** | **차량 하드웨어 + 음향 테라피 원터치 오케스트레이션**<br>• **원터치 프리셋 1번 터치**로 조명·온도·하향 송풍·창문·2열 시트통풍·사운드 동시 세팅<br>• **터널 진입 안전 확인 팝업** 후 4도어 창문 밀폐 + 내기순환 + 110Hz 저주파 차폐음 가동<br>• **5분 휴게소 안심** 시 창문 조작 잠금(`Window Lock`) + **보호자 목소리 주기적 믹싱 재생**<br>• 기어 `D` 주행 시 **조명 30% 이하 자동 감광** 및 **내비 안내 시 볼륨 20% 자동 감쇠(Ducking)** |
 
 ---
