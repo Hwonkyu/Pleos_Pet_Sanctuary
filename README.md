@@ -389,32 +389,6 @@ adb shell am start -n ai.pleos.petsanctuary/.ui.MainActivity
   <img src="manual_screenshots/sdk_gap_analysis_diagram.png" alt="SDK Gap Analysis and Future Roadmap Diagram" width="100%"/>
 </p>
 
-```mermaid
-flowchart LR
-    subgraph Current_SDK["현재 지원 SDK: Pleos Vehicle SDK v2.3.2"]
-        VHAL_6["차량 하드웨어 제어 6대 도메인\n(Light · HVAC · Window · Gear · Seat · EvBattery)"]
-        Audio_Track["AudioTrack 22.05kHz PCM 합성\n& AudioFocus 20% Ducking"]
-    end
-
-    subgraph Missing_SDK["현재 미제공 SDK / API 및 하드웨어"]
-        Navi_SDK["❌ Pleos Navigation / Map SDK\n(전방 터널·곡선로 거리 이벤트 미제공)"]
-        Sensor_SDK["❌ In-Cabin 생체·비전 센서 SDK\n(2열 강아지 심박수·호흡수·카메라 미제공)"]
-        Display_SDK["❌ HUD / 클러스터 확장 SDK\n(클러스터 반려견 케어 카드 전송 미제공)"]
-        Audio_Multi["❌ 독립 멀티존 사운드 조닝 SDK\n(1열 라디오 / 2열 펫사운드 개별 분리 미제공)"]
-    end
-
-    subgraph Future_Integration["향후 SDK / 센서 제공 시 즉시 적용 설계"]
-        F1["✅ 터널 300m 전 자동 팝업 트리거\n(곡선로 진입 전 멀미 모드 자동 예열)"]
-        F2["✅ 침 흘림·심박 급증 감지 시\n최적 케어 모드 자동 제안 & 능동 가동"]
-        F3["✅ 계기판·HUD 미니 반려견 상태 위젯 표시"]
-        F4["✅ 1열 운전자 음악 / 2열 강아지 핑크노이즈 분리"]
-    end
-
-    Current_SDK ==>|"현재 완성"| VHAL_6
-    Current_SDK ==>|"현재 완성"| Audio_Track
-    Missing_SDK -.->|"SDK 출시 시 연동"| Future_Integration
-```
-
 ---
 
 ### 9.1 현 시점의 SDK 한계점 & 향후 제공 시 적용 계획 (5대 심층 분석)
