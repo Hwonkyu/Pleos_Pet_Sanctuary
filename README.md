@@ -385,6 +385,10 @@ adb shell am start -n ai.pleos.petsanctuary/.ui.MainActivity
 
 본 장은 현대차그룹 공모전 심사위원 및 개발자를 위해 **"현재 공개된 SDK 및 에뮬레이터 환경에서 지원되지 않아 발생하는 기능적 한계점"** 과, **"향후 해당 SDK/API 및 하드웨어가 제공될 경우 즉시 플러그인 가능한 확장 구조"** 를 가감 없이 솔직하게 정리한 기술 분석서입니다.
 
+<p align="center">
+  <img src="manual_screenshots/sdk_gap_analysis_diagram.png" alt="SDK Gap Analysis and Future Roadmap Diagram" width="100%"/>
+</p>
+
 ```mermaid
 flowchart LR
     subgraph Current_SDK["현재 지원 SDK: Pleos Vehicle SDK v2.3.2"]
