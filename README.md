@@ -14,6 +14,7 @@
 6. [플랫폼 환경 특성(한계점) 및 향후 양산 확장 로드맵 (Limitations & Roadmap)](#6-플랫폼-환경-특성한계점-및-향후-양산-확장-로드맵-limitations--roadmap)
 7. [설치·실행 방법 및 테스트 환경 (How to Run)](#7-설치실행-방법-및-테스트-환경-how-to-run)
 8. [20개 JUnit 단위 테스트 검증 및 프로젝트 문서 안내](#8-20개-junit-단위-테스트-검증-및-프로젝트-문서-안내)
+9. [SDK/플랫폼 미제공 기능에 따른 현 시점 한계점 및 향후 제공 시 확장 명세 (Detailed SDK Gap Analysis)](#9-sdk플랫폼-미제공-기능에-따른-현-시점-한계점-및-향후-제공-시-확장-명세-detailed-sdk-gap-analysis)
 
 ---
 
@@ -377,3 +378,57 @@ adb shell am start -n ai.pleos.petsanctuary/.ui.MainActivity
   - [`3_CONTEST_APPLICATION_DRAFT.md`](3_CONTEST_APPLICATION_DRAFT.md) & [`공모전_접수양식_PleosPetSanctuary_초안.docx`](%EA%B3%B5%EB%AA%A8%EC%A0%84_%EC%A0%91%EC%88%98%EC%96%91%EC%8B%9D_PleosPetSanctuary_%EC%B4%88%EC%95%88.docx): 공모전 심사 규정 준수 참가 신청서
   - [`4_VISUAL_SCREEN_USER_MANUAL.md`](4_VISUAL_SCREEN_USER_MANUAL.md) & [`PleosPetSanctuary_시각적_사용설명서_매뉴얼.pdf`](PleosPetSanctuary_%EC%8B%9C%EA%B0%81%EC%A0%81_%EC%82%AC%EC%9A%A9%EC%84%A4%EB%AA%85%EC%84%9C_%EB%A7%A4%EB%89%B4%EC%96%BC.pdf): 실제 가동 캡처 + 차량 실내 렌더링 통합 비주얼 매뉴얼 (인쇄용 A4 5페이지 PDF 포함)
   - [`SHORT_FORM_VIDEO_PRODUCTION_GUIDE.md`](SHORT_FORM_VIDEO_PRODUCTION_GUIDE.md): Google Flow 1분(10초×6씬) 숏폼 영상 제작 프롬프트 및 스토리보드 가이드
+
+---
+
+## 9. SDK/플랫폼 미제공 기능에 따른 현 시점 한계점 및 향후 제공 시 확장 명세 (Detailed SDK Gap Analysis)
+
+본 장은 현대차그룹 공모전 심사위원 및 개발자를 위해 **"현재 공개된 SDK 및 에뮬레이터 환경에서 지원되지 않아 발생하는 기능적 한계점"** 과, **"향후 해당 SDK/API 및 하드웨어가 제공될 경우 즉시 플러그인 가능한 확장 구조"** 를 가감 없이 솔직하게 정리한 기술 분석서입니다.
+
+```mermaid
+flowchart LR
+    subgraph Current_SDK["현재 지원 SDK: Pleos Vehicle SDK v2.3.2"]
+        VHAL_6["차량 하드웨어 제어 6대 도메인\n(Light · HVAC · Window · Gear · Seat · EvBattery)"]
+        Audio_Track["AudioTrack 22.05kHz PCM 합성\n& AudioFocus 20% Ducking"]
+    end
+
+    subgraph Missing_SDK["현재 미제공 SDK / API 및 하드웨어"]
+        Navi_SDK["❌ Pleos Navigation / Map SDK\n(전방 터널·곡선로 거리 이벤트 미제공)"]
+        Sensor_SDK["❌ In-Cabin 생체·비전 센서 SDK\n(2열 강아지 심박수·호흡수·카메라 미제공)"]
+        Display_SDK["❌ HUD / 클러스터 확장 SDK\n(클러스터 반려견 케어 카드 전송 미제공)"]
+        Audio_Multi["❌ 독립 멀티존 사운드 조닝 SDK\n(1열 라디오 / 2열 펫사운드 개별 분리 미제공)"]
+    end
+
+    subgraph Future_Integration["향후 SDK / 센서 제공 시 즉시 적용 설계"]
+        F1["✅ 터널 300m 전 자동 팝업 트리거\n(곡선로 진입 전 멀미 모드 자동 예열)"]
+        F2["✅ 침 흘림·심박 급증 감지 시\n최적 케어 모드 자동 제안 & 능동 가동"]
+        F3["✅ 계기판·HUD 미니 반려견 상태 위젯 표시"]
+        F4["✅ 1열 운전자 음악 / 2열 강아지 핑크노이즈 분리"]
+    end
+
+    Current_SDK ==>|"현재 완성"| VHAL_6
+    Current_SDK ==>|"현재 완성"| Audio_Track
+    Missing_SDK -.->|"SDK 출시 시 연동"| Future_Integration
+```
+
+---
+
+### 9.1 현 시점의 SDK 한계점 & 향후 제공 시 적용 계획 (5대 심층 분석)
+
+| 번호 | 영역 | 현재 SDK/플랫폼 미제공 항목 | 현 시점의 기능상 한계점 | 향후 SDK/하드웨어 제공 시 즉시 적용 설계 (Architecture Ready) |
+| :---: | :--- | :--- | :--- | :--- |
+| **1** | **내비게이션 & 경로 이벤트** | • **Pleos Navigation / Map SDK 미공개**<br>• 현재 `Vehicle:2.3.2`는 순수 VHAL 하드웨어 제어 라이브러리로, 내비 경로상의 '전방 300m 터널', '급커브 구간', '요금소' 등 주행 환경 이벤트를 전달하는 API가 없음 | • 터널 진입 전 창문 밀폐 팝업이 **자동 트리거되지 않고, 운전자의 원터치 프리셋 터치 또는 엔지니어링 콘솔의 모의 수신 버튼으로 동작**함 | • **연동 준비 완료**: `PetSanctuaryService` 내부에 `ACTION_TUNNEL_APPROACHING` BroadcastReceiver와 `AlertDialog` 안전 팝업이 100% 구현되어 있음.<br>• **향후 적용**: Navigation SDK의 `OnRouteEventListener(TUNNEL, CURVE)`가 공개되면 리시버 발신부 한 줄만 연결하여 **"터널 300m 전 자동 팝업"** 및 **"연속 급커브 1km 전 멀미 쾌속 환기 자동 예열"** 로 즉시 확장 가능 |
+| **2** | **2열 인캐빈 생체 & 행동 비전 센서** | • **In-Cabin 반려견 전용 센서 API 부재**<br>• 현재 AAOS 및 에뮬레이터에는 2열 좌석에 탑승한 반려동물의 생체 신호(심박수, 체온, 호흡수)나 비전 행동 인식(침 흘림, 하품, 안절부절못함)을 읽어오는 센서 SDK가 없음 | • 반려견의 멀미나 스트레스 발생을 차가 먼저 알아채지 못하고, **운전자가 룸미러로 상태를 보고 8대 프리셋 카드 중 하나를 직접 터치**해야 함 | • **연동 준비 완료**: `PetSanctuaryController.activatePreset()`이 외부 이벤트 기반으로 언제든 모드를 자동 전환할 수 있도록 StateFlow 아키텍처 구축 완료.<br>• **향후 적용**: 실차 **2열 AI 모니터링 카메라** 및 **60GHz 레이더 센서 SDK** 연동 시, 반려견이 3회 이상 하품하거나 호흡수가 급증하면 화면에 *"반려견 멀미 징후 감지! [멀미 쾌속 환기]를 가동할까요?"* 다이얼로그 자동 제안 구현 |
+| **3** | **독립 멀티존 오디오 조닝 (Multi-Zone Sound)** | • **좌석별 개별 사운드 라우팅 API 미제공**<br>• 현재 AAOS Audio HAL은 차량 전체 스피커 또는 Fader/Balance 기반 제어만 기본 제공하며, 1열(운전자)과 2열(반려견)의 오디오 스트림을 완전히 독립된 물리 채널로 분리하는 공용 SDK API가 없음 | • 사운드 테라피(핑크노이즈, 차폐 드론, 보호자 목소리)가 차량 전체 스피커로 출력되므로, 운전자가 라디오나 다른 음악을 들으면서 2열에만 테라피 음원을 틀어주기 어려움 (음소거 토글로 해결 중) | • **향후 적용**: 현대차그룹 프리미엄 사운드 시스템의 **'독립 음향 공간(Sound Zone Control)' SDK** 지원 시, **1열 스피커는 운전자 내비/음악**을 출력하고 **2열 도어·헤드레스트 스피커에만 60BPM 핑크노이즈와 보호자 음성**을 개별 분리 재생하도록 확장 |
+| **4** | **디지털 클러스터 & HUD 확장 표출** | • **계기판/HUD 위젯 렌더링 SDK 미제공**<br>• 서드파티 앱이 차량의 12.3인치 디지털 클러스터(계기판)나 헤드업 디스플레이(HUD) 영역에 커스텀 그래픽 카드를 띄울 수 있는 SDK 권한이 제한됨 | • 내비게이션이나 다른 기본 앱을 전체 화면으로 띄워두었을 때, 상단 시스템 알림바(Notification)로만 반려견 상태를 확인할 수 있음 | • **연동 준비 완료**: 포그라운드 서비스 및 상태 복원 스냅샷이 이미 독립 프로세스로 완비됨.<br>• **향후 적용**: 클러스터 연동 SDK 오픈 시, **계기판 우측 위젯에 `[🐾 릴렉스 안심 22.0℃ | 배터리 82%]` 미니 카드를 상시 표출**하여 전방 주시 태만 완전 방지 |
+| **5** | **실차 차종별 LED 캘리브레이션 LUT** | • **차종별 하드웨어 색온도 매핑표 미제공**<br>• VHAL 표준 정수 팔레트 번호(`pleosColorIndex`)만 전달 가능하며, 제네시스/아이오닉/EV9 등 실차 도어 트림 LED 광원의 물리적 색온도(CCT)를 1:1 보정하는 SDK 캘리브레이션 맵이 없음 | • 에뮬레이터 대시보드에서는 정확한 헥사코드(`#FFB74D` 웜 앰버 등)로 오라가 빛나지만, 실제 차량 트림에 따라 미세한 앰비언트 색감 차이가 발생할 수 있음 | • **향후 적용**: 현대차그룹의 차종별 VHAL Color Look-Up Table(LUT)이 제공되면, **실차 LED 광학 특성에 맞춘 감성 색상 자동 보정 계수** 적용 |
+
+---
+
+### 9.2 아키텍처적 준비도 (Future-Proof Architecture Summary)
+
+> 💡 **"코드를 새로 짤 필요 없이, 새 SDK가 출시되면 어댑터 클래스 1개만 교체하면 즉시 양산차에 탑재됩니다."**
+>
+> 본 앱은 위 5가지 한계점을 이미 설계 단계부터 인지하고, **도메인 컨트롤러([`PetSanctuaryController`](app/src/main/java/ai/pleos/petsanctuary/domain/PetSanctuaryController.kt))와 하드웨어 연동 계층([`PetVehicleHal`](app/src/main/java/ai/pleos/petsanctuary/hal/PetVehicleHal.kt))을 인터페이스 기반으로 철저히 분리**해 두었습니다.  
+> 따라서 향후 현대차그룹에서 **`Pleos Navigation SDK`** 나 **`In-Cabin Sensor SDK`** 가 추가 배포되더라도, 기존 비즈니스 로직을 전혀 수정할 필요 없이 리스너 어댑터만 추가 등록하면 즉시 완전 자율형 지능 케어로 업그레이드될 수 있도록 **미래 대응형(Future-Proof) 구조**로 완성되었습니다.
+
