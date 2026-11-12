@@ -5,9 +5,47 @@
 
 ---
 
+## 📌 핵심 프로젝트 요약 (Quick Overview)
+
+### 1. 앱 이름 및 한 줄 소개
+- **앱 이름**: **Pleos Pet Sanctuary (플레오스 펫 힐링 라운지)**
+- **한 줄 소개**: 반려견 동승 주행 및 정차 시 발생하는 **멀미·터널 패닉·창문 추락 사고·분리불안**을 완화하기 위해, 현대차그룹 **Pleos Vehicle SDK 6대 차량 도메인(`Light`, `HVAC`, `Window`, `Gear`, `Seat`, `EvBattery`)**과 **실시간 절차적 사운드 테라피 & 안심 음성**을 단 한 번의 터치로 통합 제어하는 Android Automotive OS(AAOS) 전용 플래그십 인포테인먼트 안전 케어 시스템입니다.
+
+### 2. APK 파일 위치 및 GitHub 링크
+- 📱 **사전 빌드된 서명 Release APK**:
+  - [`apk/PleosPetSanctuary_release.apk`](apk/PleosPetSanctuary_release.apk)
+  - [`apk/팀명_PleosPetSanctuary_release.apk`](apk/%ED%8C%80%EB%AA%85_PleosPetSanctuary_release.apk)
+- 🌐 **GitHub 저장소**: [https://github.com/Hwonkyu/Pleos_Pet_Sanctuary](https://github.com/Hwonkyu/Pleos_Pet_Sanctuary)
+
+### 3. 개발에 사용한 Pleos Connect 에뮬레이터 버전과 화면 규격
+- **에뮬레이터 시스템 이미지**: `Pleos Connect v2.1.0` (`system-images;android-34;pleos_car_emulator;x86_64`)
+- **AVD 명칭**: `Pleos_Connect_AVD` (Device: `Pleos_Connect_v2_0`)
+- **화면 해상도 및 규격**: **`2560 × 1440` (와이드스크린 가로형 콕핏 디스플레이)**
+  - *반응형 지원*: 와이드스크린 시 2×4 그리드, 분할 화면(`width < 900dp`) 진입 시 4×2 컴팩트 그리드 자동 전환
+
+### 4. 테스트 환경 및 필요한 설정
+- **타깃 OS / 플랫폼**: Android Automotive OS (AAOS), `minSdk = 28` (Android 9.0+), `compileSdk = 34`, `targetSdk = 34`
+- **언어 및 빌드 도구**: Kotlin `1.9.24`, JDK `17`, Gradle `8.11.1`, AGP `8.5.2`
+- **핵심 연동 SDK**: `ai.pleos.playground:Vehicle:2.3.2` (6대 VHAL 도메인 연동)
+- **필요 런타임 권한**: `android.permission.RECORD_AUDIO` (보호자 5초 음성 녹음 기능 시 사용, 최초 실행 시 런타임 다이얼로그 자동 요청)
+- **단위 테스트 검증**: JUnit 20개 테스트 전원 통과 완료 (`20 Passed, 0 Failures in 0.169s`)
+
+### 5. 실행 방법 (Quick Start)
+```bash
+# 1. Pleos Connect AAOS 에뮬레이터(또는 ADB 연결 기기)에 사전 빌드된 Release APK 설치
+adb install -r apk/PleosPetSanctuary_release.apk
+
+# 2. 앱 메인 화면 즉시 실행
+adb shell am start -n ai.pleos.petsanctuary/.ui.MainActivity
+```
+
+---
+
+# 📖 앱 상세 소개 및 기능 설명 (Detailed Documentation)
+
 ## 📑 목차 (Table of Contents)
-1. [왜 이 앱을 만들었나요? (기획 배경 및 한 줄 소개)](#1-왜-이-앱을-만들었나요-기획-배경-및-한-줄-소개)
-2. [2대 플래그십 안전 하드웨어 킬러 기능 & 시나리오별 시각 가이드 (Visual Guide)](#2--2대-플래그십-안전-하드웨어-킬러-기능--시나리오별-시각-가이드-visual-guide)
+1. [왜 이 앱을 만들었나요? (기획 배경 및 문제 정의)](#1-왜-이-앱을-만들었나요-기획-배경-및-문제-정의)
+2. [2대 플래그십 안전 하드웨어 핵심 기능 & 시나리오별 시각 가이드 (Visual Guide)](#2--2대-플래그십-안전-하드웨어-핵심-기능--시나리오별-시각-가이드-visual-guide)
 3. [8대 원터치 감각 케어 프리셋 한눈에 보기](#3-8대-원터치-감각-케어-프리셋-한눈에-보기)
 4. [실제 구현된 핵심 기능 및 안전 설계 (How It Works)](#4-실제-구현된-핵심-기능-및-안전-설계-how-it-works)
 5. [시스템 아키텍처 & Pleos SDK 연동 구조도 (Architecture)](#5-시스템-아키텍처--pleos-sdk-연동-구조도-architecture)
@@ -18,10 +56,7 @@
 
 ---
 
-## 1. 왜 이 앱을 만들었나요? (기획 배경 및 한 줄 소개)
-
-### 💡 한 줄 소개
-**Pleos Pet Sanctuary (플레오스 펫 힐링 라운지)** 는 반려견 동승 주행 및 정차 시 발생하는 **멀미·터널 패닉·과열·분리불안**을 완화하기 위해, 현대자동차그룹 **Pleos Vehicle SDK 6대 차량 도메인(`Light`, `HVAC`, `Window`, `Gear`, `Seat`, `EvBattery`)** 과 **실시간 절차적 사운드 테라피 & 보호자 안심 음성(`AudioTrack` · `AudioRecord` · `TextToSpeech`)** 을 **단 한 번의 터치로 통합 제어**하는 Android Automotive OS(AAOS) 전용 인포테인먼트 케어 앱입니다.
+## 1. 왜 이 앱을 만들었나요? (기획 배경 및 문제 정의)
 
 ### 🐶 반려견과 운전자가 차 안에서 겪는 실제 문제
 
@@ -32,9 +67,9 @@
 
 ---
 
-## 2. 🌟 2대 플래그십 안전 하드웨어 킬러 기능 & 시나리오별 시각 가이드 (Visual Guide)
+## 2. 🌟 2대 플래그십 안전 하드웨어 핵심 기능 & 시나리오별 시각 가이드 (Visual Guide)
 
-처음 보는 분들도 앱을 어떻게 사용하는지, 그리고 각 버튼을 눌렀을 때 실제 자동차 실내 공간이 어떻게 변하는지 직관적으로 이해할 수 있도록 **`Pleos_Connect_AVD` 실제 가동 캡처 화면**과 **차량 실내 공간 렌더링 이미지**를 1:1로 매칭했습니다. 특히 스마트폰 앱으로는 불가능하고 **오직 차량 VHAL 하드웨어 제어(Pleos SDK)로만 해결할 수 있는 [🚇 터널 세이프가드]와 [⏱️ 5분 휴게소 안심 가디언]을 2대 플래그십 킬러 기능**으로 전면에 배치했습니다.
+처음 보는 분들도 앱을 어떻게 사용하는지, 그리고 각 버튼을 눌렀을 때 실제 자동차 실내 공간이 어떻게 변하는지 직관적으로 이해할 수 있도록 **`Pleos_Connect_AVD` 실제 가동 캡처 화면**과 **차량 실내 공간 렌더링 이미지**를 1:1로 매칭했습니다. 특히 스마트폰 앱으로는 불가능하고 **오직 차량 VHAL 하드웨어 제어(Pleos SDK)로만 해결할 수 있는 [🚇 터널 세이프가드]와 [⏱️ 5분 휴게소 안심 가디언]을 2대 플래그십 핵심 기능**으로 전면에 배치했습니다.
 
 ---
 
