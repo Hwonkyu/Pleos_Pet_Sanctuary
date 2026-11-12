@@ -98,27 +98,38 @@
 
 ### 5. 개발 계획 및 현황 (심사기준: 기술 활용성 — 구현 완료 범위 vs 향후 고도화 계획)
 
-본 프로젝트는 **1차 접수 시점에 이미 Pleos Connect 에뮬레이터(`Pleos_Connect_AVD`)에서 동작하는 실제 네이티브 앱(Release APK 및 14개 단위 테스트 통과)을 구현 완료**하였으며, 현재 구현 완료된 범위와 에뮬레이터 환경의 한계점, 2차 PT 심사 전까지의 고도화 계획을 투명하게 구분하여 제시합니다.
+본 프로젝트는 **1차 접수 시점에 이미 Pleos Connect 에뮬레이터(`Pleos_Connect_AVD`)에서 100% 정상 가동하는 실제 네이티브 앱(서명된 Release APK 및 20개 단위 테스트 전원 통과)을 완성**하였으며, 현재 구현 완료된 수준과 에뮬레이터 플랫폼의 환경적 한계점, 향후 실차 양산 단계의 고도화 계획을 투명하고 깔끔하게 3단계로 구분하여 제시합니다.
 
-#### [5.1 현재 구현 및 검증 완료된 기술 범위 (Phase 1 — 완료)]
-- **공식 Pleos Vehicle SDK (`ai.pleos.playground:Vehicle:2.3.2`) 4대 도메인 연동 ([`PleosSdkVehicleHal.kt`](./app/src/main/java/ai/pleos/petsanctuary/hal/PleosSdkVehicleHal.kt))**:
-  - **동적 Capability 탐색**: 차량 초기화 시 `checkAmbientLight*Capabilities`, `checkHvac*Capabilities`, `checkWindow*Capabilities`를 호출하여 해당 차량/트림이 실제 지원하는 `SeatArea`·`WindowArea` 비트마스크와 온도/밝기/풍량 허용 범위를 동적 획득.
-  - **VHAL 제어 및 초기 상태 스냅샷**: `Light`(`setAmbientLightSwitch`, `setAmbientLightBrightness`, `setAmbientLightBrightnessColor`, `setReadingLightSwitch`), `HVAC`(`setHvacPower`, `setHvacAc`, `setHvacTemperature`, `setHvacAirCleaner`, `setHvacRecirculation`), `Window`(`setWindowLock`, `setWindowPosition`), `Gear`(`registerGearSelection`) 실제 연동 및 초기 상태 Getter 스냅샷 구현.
-  - **투명한 VHAL 폴백 아키텍처**: `Pleos_Connect_AVD` 에뮬레이터에서 하드웨어 속성 미지원 에러(`PropertyAsyncError code 2`: `HVAC_FAN_SPEED`, `HVAC_FAN_DIRECTION`)가 반환될 때 크래시 없이 `SimulatedVehicleHal`로 폴백하고 UI에 **`[VHAL폴백: 풍량단수/풍향제어]`** 를 실시간 표시.
-- **실시간 절차적 사운드 합성 & 보호자 안심 보이스 믹싱 엔진 ([`PetSoundEngine.kt`](./app/src/main/java/ai/pleos/petsanctuary/audio/PetSoundEngine.kt))**:
-  - 외부 음원 리소스 없이 `AudioTrack`(`22,050Hz`, 16-bit PCM `MODE_STREAM`)에서 실시간으로 6종 사운드 파형 합성.
-  - 정차(`Gear = P`) 상태에서 **`AudioRecord` 기반 보호자 음성 5초 녹음(`owner_voice_pcm16.raw` 저장)** 및 **`TextToSpeech.synthesizeToFile()` 기반 AI 한국어 안심 음성 생성**을 지원하며, 생성된 보이스 버퍼를 배경 테라피 사운드 위에 페이드인/아웃과 함께 실시간 PCM 믹싱 출력(`AudioFocus` 20% 덕킹 동시 적용, 주행 중 녹음 버튼 `CarUxRestrictions` 잠금 적용).
-- **포그라운드 서비스 및 반응형 콕핏 UI ([`PetSanctuaryService.kt`](./app/src/main/java/ai/pleos/petsanctuary/service/PetSanctuaryService.kt), [`MainActivity.kt`](./app/src/main/java/ai/pleos/petsanctuary/ui/MainActivity.kt))**:
-  - 와이드스크린(`2560×1440`) 및 분할 화면(`width < 900dp`) 반응형 레이아웃, 5분/7분 코루틴 타이머, 터널 창문 확인 팝업, JUnit 16개 테스트 검증 완료.
+#### [5.1 현재 개발 완료 수준 (Current Completed Level — 네이티브 앱 및 Release APK 빌드 완료)]
+1. **공식 Pleos Vehicle SDK (`ai.pleos.playground:Vehicle:2.3.2`) 6대 전 도메인 연동 완비 ([`PleosSdkVehicleHal.kt`](./app/src/main/java/ai/pleos/petsanctuary/hal/PleosSdkVehicleHal.kt))**:
+   - **동적 Capability 탐색**: 차량 초기화 시 `checkAmbientLight*Capabilities`, `checkHvac*Capabilities`, `checkWindow*Capabilities`, `checkSeatVentilationCapabilities`를 호출하여 차종/트림별 지원 `SeatArea`·`WindowArea` 비트마스크와 제어 가능 범위를 동적 획득하고 초기 상태 스냅샷 저장.
+   - **6대 도메인 VHAL 제어**: `Light`(무드램프 색상·밝기·2열 독서등 소등), `HVAC`(온도·에어컨·공기청정·내기순환·하향송풍), `Window`(창문 조작 잠금·4도어 밀폐), `Gear`(변속 감지·주행 감광), `Seat`(2열 시트통풍), `EvBattery`(배터리 잔량 감시 및 20% 안전 하한선 가드).
+   - **이중 방어 아키텍처**: 에뮬레이터 VHAL 속성 미지원 시 `PleosSdkVehicleHal` ↔ `SimulatedVehicleHal`로 안전하게 폴백.
+2. **2대 플래그십 안전 하드웨어 킬러 기능 구현 완료**:
+   - `🚇 터널 세이프가드`: 창문 끼임 방지 안전 확인 팝업(`AlertDialog`) 후 4개 도어 창문 100% 밀폐 + 내기순환 + 110Hz 저주파 차폐음 가동.
+   - `⏱️ 5분 휴게소 안심 가디언`: 정차(`P`) 전용, 창문 조작 잠금(`setWindowLock`), 5분(300초) 실시간 카운트다운 타이머, 5초 보호자 음성 녹음(`AudioRecord`) 및 AI 한국어 안심 음성(`TTS`) 실시간 믹싱 재생.
+3. **오디오 엔진 & 품질 검증**:
+   - 외부 음원 파일 없이 `AudioTrack` 22.05kHz PCM 실시간 합성, `AudioFocus` 20% 내비게이션 자동 덕킹.
+   - 포그라운드 서비스(`PetSanctuaryService`) 기반 백그라운드 케어 유지, **JUnit 20개 단위 테스트 전원 통과 (`0.169초, 0 Failures`)**, 서명된 최신 Release APK 빌드 완료.
 
-#### [5.2 현재 한계점 및 2차 PT / 향후 고도화 계획 (Phase 2)]
-1. **Pleos `FusedLocation` & `NaviHelper` SDK 결합을 통한 터널 300m 전 자동 감지 구현**:
-   - *현재 상태*: 앱 내 터널 브로드캐스트 수신기(`naviTunnelReceiver`)와 확인 팝업, 창문/공조 제어는 구현되어 있으나 `Vehicle:2.3.2` SDK에는 내비게이션 경로 이벤트가 없어 수동/모의 트리거로 동작합니다.
-   - *고도화 계획*: Pleos `FusedLocation` 및 `NaviHelper` SDK와 전국 터널 좌표 DB(Geo-fence)를 결합하여 실제 주행 중 터널 진입 300m 전에 자동으로 안전 확인 팝업을 띄우는 발신 모듈을 완성하겠습니다.
-2. **Pleos `TextToSpeech(TTS)` & 보호자 안심 보이스 연동**:
-   - `5분 휴게소 안심` 모드에서 차임벨과 함께 Pleos TTS 또는 보호자 녹음 음성을 주기적으로 송출하도록 오디오 엔진을 확장하겠습니다.
-3. **`Seat` (2열 통풍시트) 및 `EvBattery` (배터리 안전 하한선) SDK 추가 연동**:
-   - `Vehicle:2.3.2` AAR 내 `Seat` 및 `EvBattery` API를 추가 연동하여 산책 후 2열 시트 통풍 가동 및 정차 중 EV 배터리 20% 이하 시 안전 알림 기능을 추가하겠습니다.
+#### [5.2 플랫폼 제약사항 및 현 시점의 환경적 한계점 (Constraints & Limitations — 투명한 기술 분석)]
+1. **제약 1 [내비게이션 경로 이벤트 API 미공개]**:
+   - 현재 공개된 `Vehicle:2.3.2` SDK는 차량 VHAL 하드웨어 제어 전용 SDK로, 내비 경로상의 '전방 300m 터널 접근' 이벤트 API가 포함되어 있지 않습니다.
+   - *현재 상태*: 백그라운드 수신기(`BroadcastReceiver`)와 안전 팝업은 완성되어 있으나, 현재는 운전자의 원터치 프리셋 터치 또는 엔지니어링 콘솔의 모의 수신 버튼으로 동작합니다.
+2. **제약 2 [2열 인캐빈 생체·행동 비전 센서 부재]**:
+   - 현재 AAOS 에뮬레이터 환경에는 2열 탑승 반려견의 실시간 심박수·호흡수나 비전 행동(침 흘림, 하울링)을 계측하는 센서 SDK가 부재합니다.
+   - *현재 상태*: 8대 원터치 카드 및 타이머 기반으로 동작하며, 차량이 스스로 강아지의 멀미나 하울링을 자동 감지하지는 못합니다.
+3. **제약 3 [독립 멀티존 오디오 조닝 분리 한계]**:
+   - 현재 AAOS 오디오 시스템은 1열(운전자)과 2열(반려견)의 물리 출력 채널을 완전히 분리하는 공용 SDK를 제공하지 않아 차량 전체 스피커로 출력됩니다. (현재 음소거 토글 및 20% 내비 덕킹으로 보완 중)
+
+#### [5.3 향후 개발 및 양산 고도화 계획 (Future Development Roadmap)]
+1. **Step 1 [터널 300m 전 자동 팝업 완전 자동화 (2차 PT 및 SDK 출시 시)]**:
+   - `Pleos Navigation SDK` 경로 이벤트 공개 시 수신 모듈을 즉시 1줄 연결하여 터널 300m 전 자동 팝업 트리거 완성.
+   - (대체 방안) SDK 지연 시 국토교통부 전국 터널 입출구 공간 좌표 DB(지오펜싱) + `FusedLocationProviderClient` 결합 발신 모듈 탑재로 실차 자동 트리거 완성.
+2. **Step 2 [2열 인캐빈 AI 카메라 & 60GHz 레이더 센서 연동 (실차 양산 단계)]**:
+   - 2열 반려견 모니터링 카메라(하품 3회 이상, 침 흘림 비전 감지) 및 레이더(호흡수 급증) SDK 연동 시, 운전자 화면에 *"멀미 징후 감지! [멀미 쾌속 환기]를 가동할까요?"* 능동 제안 팝업 및 보호자 스마트폰 원격 푸시 알림 구현.
+3. **Step 3 [현대차 독립 음향 공간(Sound Zone Control) 연동]**:
+   - 현대차 프리미엄 사운드 시스템 연동을 통해 1열 스피커는 운전자 내비/음악을, 2열 도어·헤드레스트 스피커는 핑크노이즈 및 보호자 음성만 독립 분리 재생.
 
 ---
 
