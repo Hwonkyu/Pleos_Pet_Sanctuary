@@ -14,7 +14,7 @@
 ### 2. APK 파일 위치 및 GitHub 링크
 - 📱 **사전 빌드된 서명 Release APK**:
   - [`apk/PleosPetSanctuary_release.apk`](apk/PleosPetSanctuary_release.apk)
-  - [`apk/팀명_PleosPetSanctuary_release.apk`](apk/%ED%8C%80%EB%AA%85_PleosPetSanctuary_release.apk)
+  - [`apk/조티여영원하라_PleosPetSanctuary_release.apk`](apk/%EC%A1%B0%ED%8B%B0%EC%97%AC%EC%98%81%EC%9B%90%ED%95%98%EB%9D%BC_PleosPetSanctuary_release.apk)
 - 🌐 **GitHub 저장소**: [https://github.com/Hwonkyu/Pleos_Pet_Sanctuary](https://github.com/Hwonkyu/Pleos_Pet_Sanctuary)
 
 ### 3. 개발에 사용한 Pleos Connect 에뮬레이터 버전과 화면 규격
@@ -417,7 +417,7 @@ adb shell am start -n ai.pleos.petsanctuary/.ui.MainActivity
 ### 8.2 저장소 내 주요 산출물 및 문서 링크
 - 📱 **실행 APK 파일**:
   - [`apk/PleosPetSanctuary_release.apk`](apk/PleosPetSanctuary_release.apk)
-  - [`apk/팀명_PleosPetSanctuary_release.apk`](apk/%ED%8C%80%EB%AA%85_PleosPetSanctuary_release.apk)
+  - [`apk/조티여영원하라_PleosPetSanctuary_release.apk`](apk/%EC%A1%B0%ED%8B%B0%EC%97%AC%EC%98%81%EC%9B%90%ED%95%98%EB%9D%BC_PleosPetSanctuary_release.apk)
 - 📘 **상세 문서 패키지**:
   - [`1_USER_GUIDE_AND_FEATURES.md`](1_USER_GUIDE_AND_FEATURES.md): 처음 보는 사용자를 위한 앱 사용법 및 8대 프리셋 상세 가이드
   - [`2_ARCHITECTURE_AND_SDK_VISUAL_GUIDE.md`](2_ARCHITECTURE_AND_SDK_VISUAL_GUIDE.md): 다이어그램 중심 4계층 아키텍처, Pleos SDK 6대 도메인 및 한계점/확장 설계서

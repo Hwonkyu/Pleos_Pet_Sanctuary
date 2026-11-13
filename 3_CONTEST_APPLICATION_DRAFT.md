@@ -103,7 +103,7 @@
 - **2대 플래그십 핵심 안전 기능 구현**:
   - `🚇 터널 세이프가드`: 창문 끼임 방지 안전 팝업(`AlertDialog`) 승인 후 4도어 밀폐 + 내기순환 + 110Hz 저주파 차폐음 가동
   - `⏱️ 5분 휴게소 안심 가디언`: 정차(기어 `P`) 전용, 창문 조작 잠금(`setWindowLock`), 5분 실시간 카운트다운 타이머, 5초 보호자 음성 녹음(`AudioRecord`) 및 AI 안심 음성(`TTS`) 믹싱 재생
-- **8대 원터치 감각 케어 프리셋 & 안정성 검증**: 에뮬레이터 VHAL 방어 폴백 아키텍처, 포그라운드 서비스 유지, **JUnit 20개 테스트 전원 통과**, 서명된 Release APK 빌드 완료 (`apk/팀명_PleosPetSanctuary_release.apk`)
+- **8대 원터치 감각 케어 프리셋 & 안정성 검증**: 에뮬레이터 VHAL 방어 폴백 아키텍처, 포그라운드 서비스 유지, **JUnit 20개 테스트 전원 통과**, 서명된 Release APK 빌드 완료 (`apk/조티여영원하라_PleosPetSanctuary_release.apk`)
 
 #### [5.2 제약사항 및 환경적 한계점]
 - **내비게이션 경로 API 미제공**: 현재 `Vehicle` SDK는 하드웨어 제어 전용으로 '터널 300m 전' 내비 이벤트가 없어, 현재는 원터치 버튼 및 모의 수신으로 동작함
@@ -145,7 +145,7 @@
 
 ### 7. 참고자료 (선택 · 가산점 부여)
 - **GitHub 저장소**: `[제출 시 GitHub 저장소 URL 기입 — 비공개 저장소인 경우 심사용 계정 Collaborator 초대]`
-- **실행 가능한 Release APK 경로**: 저장소 내 `apk/팀명_PleosPetSanctuary_release.apk` (Android API 28~34 호환, 서명 완료된 Release 빌드)
+- **실행 가능한 Release APK 경로**: 저장소 내 `apk/조티여영원하라_PleosPetSanctuary_release.apk` (Android API 28~34 호환, 서명 완료된 Release 빌드)
 - **기술 및 사용 가이드 문서**:
   - `README.md` (앱 소개, 실행 방법, 테스트 환경, APK 위치)
   - `1_USER_GUIDE_AND_FEATURES.md` (사용자 매뉴얼 및 기능·모듈 상세 해설서)
