@@ -26,9 +26,8 @@
 ### 4. 테스트 환경 및 필요한 설정
 - **타깃 OS / 플랫폼**: Android Automotive OS (AAOS), `minSdk = 28` (Android 9.0+), `compileSdk = 34`, `targetSdk = 34`
 - **언어 및 빌드 도구**: Kotlin `1.9.24`, JDK `17`, Gradle `8.11.1`, AGP `8.5.2`
-- **핵심 연동 SDK**: `ai.pleos.playground:Vehicle:2.3.2` (6대 VHAL 도메인 연동)
+- **핵심 연동 SDK**: `ai.pleos.playground:Vehicle:2.3.2` 
 - **필요 런타임 권한**: `android.permission.RECORD_AUDIO` (보호자 5초 음성 녹음 기능 시 사용, 최초 실행 시 런타임 다이얼로그 자동 요청)
-- **단위 테스트 검증**: JUnit 20개 테스트 전원 통과 완료 (`20 Passed, 0 Failures in 0.169s`)
 
 ### 5. 실행 방법 (Quick Start)
 ```bash
